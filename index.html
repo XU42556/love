@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我们 · 2021.05.01</title>
+<meta name="description" content="从 2021 年 5 月 1 日开始的恋爱计时">
+<meta name="theme-color" content="#12060f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='32' y='50' font-size='48' text-anchor='middle'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+<style>
+  :root{
+    --bg:#0c0409;
+    --panel:rgba(255,255,255,.045);
+    --line:rgba(255,255,255,.09);
+    --text:#fbebf2;
+    --muted:#c9a6b6;
+    --rose:#ff5d8f;
+    --pink:#ff9ec4;
+    --gold:#ffd79a;
+    --violet:#b06bff;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    padding:0 18px 56px;
+  }
+
+  /* ---------- 背景 ---------- */
+  .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .bg::before,
+  .bg::after{content:"";position:absolute;border-radius:50%;filter:blur(110px)}
+  .bg::before{
+    width:60vmax;height:60vmax;left:-18vmax;top:-22vmax;
+    background:radial-gradient(circle,rgba(255,93,143,.55),transparent 68%);
+    animation:floatA 22s ease-in-out infinite;
+  }
+  .bg::after{
+    width:56vmax;height:56vmax;right:-16vmax;bottom:-20vmax;
+    background:radial-gradient(circle,rgba(176,107,255,.42),transparent 68%);
+    animation:floatB 26s ease-in-out infinite;
+  }
+  @keyframes floatA{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(40px,50px,0) scale(1.08)}
+  }
+  @keyframes floatB{
+    0%,100%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(-44px,-38px,0) scale(1.06)}
+  }
+
+  /* 飘浮的心 */
+  .hearts{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+  .hearts span{
+    position:absolute;bottom:-40px;
+    font-size:15px;opacity:0;
+    animation:rise linear infinite;
+    filter:drop-shadow(0 0 6px rgba(255,93,143,.7));
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0deg);opacity:0}
+    10%{opacity:.85}
+    90%{opacity:.25}
+    100%{transform:translateY(-105vh) rotate(28deg);opacity:0}
+  }
+
+  /* ---------- 布局 ---------- */
+  .wrap{max-width:860px;margin:0 auto}
+
+  /* ---------- 首屏 ---------- */
+  header{padding:clamp(48px,10vh,104px) 0 12px;text-align:center}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:7px 17px;margin-bottom:26px;
+    font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--pink);
+    border:1px solid rgba(255,93,143,.34);
+    border-radius:999px;
+    background:rgba(255,93,143,.09);
+    animation:fadeUp .8s cubic-bezier(.2,.7,.3,1) both;
+  }
+  .tag i{
+    width:7px;height:7px;border-radius:50%;background:var(--rose);
+    box-shadow:0 0 0 0 rgba(255,93,143,.8);
+    animation:beat 1.9s ease-out infinite;
+  }
+  @keyframes beat{
+    0%{box-shadow:0 0 0 0 rgba(255,93,143,.7)}
+    65%{box-shadow:0 0 0 10px rgba(255,93,143,0)}
+    100%{box-shadow:0 0 0 0 rgba(255,93,143,0)}
+  }
+
+  .names{
+    margin:0 0 10px;
+    font-size:clamp(1.5rem,4.4vw,2.05rem);
+    font-weight:600;letter-spacing:.04em;
+    animation:fadeUp .8s cubic-bezier(.2,.7,.3,1) .08s both;
+  }
+  .names .amp{color:var(--rose);margin:0 .34em;font-weight:400}
+
+  .hero-num{
+    margin:6px 0 0;
+    font-size:clamp(4.4rem,17vw,9.4rem);
+    line-height:.98;
+    font-weight:800;
+    letter-spacing:-.045em;
+    background:linear-gradient(150deg,#fff 8%,var(--pink) 42%,var(--rose) 66%,var(--gold) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:fadeUp .9s cubic-bezier(.2,.7,.3,1) .14s both;
+  }
+  .hero-unit{
+    margin:0;
+    font-size:clamp(.95rem,2.6vw,1.12rem);
+    color:var(--muted);letter-spacing:.3em;
+    animation:fadeUp .9s cubic-bezier(.2,.7,.3,1) .2s both;
+  }
+
+  .clock{
+    margin:26px auto 0;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 20px;
+    font-variant-numeric:tabular-nums;
+    font-size:1rem;letter-spacing:.06em;
+    color:#ffe3ee;
+    border:1px solid var(--line);border-radius:14px;
+    background:rgba(255,255,255,.045);
+    backdrop-filter:blur(8px);
+    animation:fadeUp .9s cubic-bezier(.2,.7,.3,1) .26s both;
+  }
+  .clock b{color:var(--pink);font-weight:600;min-width:2ch;text-align:center}
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:none}
+  }
+
+  /* ---------- 卡片 ---------- */
+  .grid{
+    display:grid;gap:14px;margin-top:46px;
+    grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+  }
+
+  .card{
+    padding:22px 22px 20px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:var(--panel);
+    backdrop-filter:blur(10px);
+    transition:transform .22s ease,border-color .22s ease,background .22s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,93,143,.42);
+    background:rgba(255,93,143,.07);
+  }
+  .card h3{
+    margin:0 0 10px;
+    font-size:.74rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .card .v{
+    font-size:1.72rem;font-weight:700;line-height:1.2;
+    font-variant-numeric:tabular-nums;
+  }
+  .card .v small{font-size:.86rem;font-weight:500;color:var(--muted);margin-left:3px}
+  .card .sub{margin-top:6px;font-size:.8rem;color:var(--muted)}
+  .card.hot .v{color:var(--gold)}
+
+  /* ---------- 区块标题 ---------- */
+  section{margin-top:58px}
+  h2{
+    margin:0 0 20px;
+    font-size:1.06rem;font-weight:600;letter-spacing:.1em;
+    color:#f7d9e6;
+    display:flex;align-items:center;gap:12px;
+  }
+  h2::after{
+    content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,rgba(255,93,143,.5),transparent);
+  }
+
+  /* ---------- 时间线 ---------- */
+  .timeline{position:relative;padding-left:26px}
+  .timeline::before{
+    content:"";position:absolute;left:6px;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,rgba(255,93,143,.65),rgba(176,107,255,.28),transparent);
+  }
+  .item{position:relative;padding:0 0 22px}
+  .item::before{
+    content:"";position:absolute;left:-25px;top:9px;
+    width:11px;height:11px;border-radius:50%;
+    background:#16070f;border:2px solid rgba(255,93,143,.55);
+  }
+  .item.past::before{background:var(--rose);border-color:var(--rose);box-shadow:0 0 12px rgba(255,93,143,.85)}
+  .item.next::before{
+    background:var(--gold);border-color:var(--gold);
+    box-shadow:0 0 0 5px rgba(255,215,154,.16),0 0 16px rgba(255,215,154,.8);
+  }
+  .item .when{font-size:.8rem;color:var(--muted);letter-spacing:.05em}
+  .item .what{font-size:1rem;font-weight:500;margin-top:1px}
+  .item.next .what{color:var(--gold)}
+  .item .meta{font-size:.79rem;color:#9d7f8e;margin-top:1px}
+
+  /* ---------- 情话 ---------- */
+  .quote{
+    padding:34px 30px;
+    border-radius:18px;
+    border:1px solid rgba(255,93,143,.22);
+    background:linear-gradient(135deg,rgba(255,93,143,.10),rgba(176,107,255,.07));
+    text-align:center;
+    font-size:clamp(1.02rem,2.8vw,1.2rem);
+    line-height:2;
+    color:#ffe7f0;
+  }
+  .quote .mark{color:var(--rose);font-size:1.5em;line-height:0;vertical-align:-.2em;margin:0 .2em}
+
+  /* ---------- 相册 ---------- */
+  .gallery{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+  .shot{
+    position:relative;aspect-ratio:1;overflow:hidden;border-radius:16px;
+    border:1px solid var(--line);background:rgba(255,255,255,.03);
+  }
+  .shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .shot:hover img{transform:scale(1.05)}
+  .shot .cap{
+    position:absolute;inset:auto 0 0 0;
+    padding:22px 12px 10px;
+    font-size:.78rem;color:#fff;
+    background:linear-gradient(transparent,rgba(0,0,0,.72));
+  }
+
+  /* ---------- 页脚 ---------- */
+  footer{
+    margin-top:64px;padding-top:24px;
+    border-top:1px solid rgba(255,255,255,.07);
+    text-align:center;font-size:.8rem;color:#8d6d7c;
+  }
+  footer .heart{color:var(--rose)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important}
+  }
+  @media (max-width:520px){
+    body{padding:0 14px 40px}
+    .card{padding:18px}
+    .card .v{font-size:1.5rem}
+    .quote{padding:26px 20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"></div>
+<div class="hearts" id="hearts" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header>
+    <div class="tag"><i></i> since 2021.05.01</div>
+    <h1 class="names" id="names"></h1>
+    <p class="hero-num" id="days">·</p>
+    <p class="hero-unit">天</p>
+    <div class="clock" aria-live="off">
+      <span>已经一起走过</span>
+      <b id="d">0</b><span>天</span>
+      <b id="h">00</b><span>:</span>
+      <b id="m">00</b><span>:</span>
+      <b id="s">00</b>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h3>今天</h3>
+      <div class="v" id="today"></div>
+      <div class="sub" id="todaySub"></div>
+    </div>
+    <div class="card hot">
+      <h3>下一个周年</h3>
+      <div class="v" id="nextAnniv"></div>
+      <div class="sub" id="nextAnnivSub"></div>
+    </div>
+    <div class="card">
+      <h3>下个天数里程碑</h3>
+      <div class="v" id="nextMile"></div>
+      <div class="sub" id="nextMileSub"></div>
+    </div>
+    <div class="card">
+      <h3>我们一起过完了</h3>
+      <div class="v" id="seasons"></div>
+      <div class="sub">个春夏秋冬</div>
+    </div>
+  </div>
+
+  <section>
+    <h2>我们的大事记</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section id="gallerySection" hidden>
+    <h2>相册</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section>
+    <h2>今天想说</h2>
+    <div class="quote" id="quote"></div>
+  </section>
+
+  <footer>
+    从 <b>2021 年 5 月 1 日</b> 到现在，每一天都算数 <span class="heart">❤</span>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   想改内容，只需要改下面这个 CONFIG 就行
+   ============================================================ */
+const CONFIG = {
+  // 在一起的起点（年, 月-1, 日）—— 5 月是 4，因为月份从 0 开始
+  start: new Date(2021, 4, 1, 0, 0, 0),
+
+  yourName: 'xky',
+  herName: 'fyy',
+
+  // 相册：把照片放进同目录的 photos 文件夹，然后按下面的格式写进来
+  // 例如：['photos/1.jpg', 'photos/2.jpg']
+  photos: [],
+
+  // 每天随机显示一句
+  quotes: [
+    '和你在一起的每一天，都比前一天更喜欢你一点。',
+    '喜欢你这件事，我打算坚持一辈子。',
+    '世界很大，还好我遇见的是你。',
+    '别人问我为什么总笑，我说因为想起了你。',
+    '未来很长，我们慢慢走。',
+    '和你在一起之后，普通的日子也开始发光。',
+    '想把所有温柔都攒起来，全部给你。'
+  ]
+};
+
+/* ============ 以下不用改 ============ */
+
+const $ = id => document.getElementById(id);
+const DAY = 86400000;
+
+// 名字
+$('names').innerHTML =
+  escapeHtml(CONFIG.yourName) + '<span class="amp">❤</span>' + escapeHtml(CONFIG.herName);
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+  ));
+}
+function pad(n){ return String(n).padStart(2, '0'); }
+function fmtDate(d){
+  return d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日';
+}
+// 只按“日期”比较，忽略时分秒
+function dayIndex(d){ return Math.floor((d - CONFIG.start) / DAY); }
+
+/* ---------- 主计时 ---------- */
+function tick(){
+  const now = new Date();
+  const diff = now - CONFIG.start;
+  if (diff < 0) {
+    $('days').textContent = '0';
+    return;
+  }
+  const days = Math.floor(diff / DAY);
+  const hours = Math.floor(diff / 3600000) % 24;
+  const mins  = Math.floor(diff / 60000) % 60;
+  const secs  = Math.floor(diff / 1000) % 60;
+
+  $('days').textContent = days.toLocaleString('en-US');
+  $('d').textContent = days.toLocaleString('en-US');
+  $('h').textContent = pad(hours);
+  $('m').textContent = pad(mins);
+  $('s').textContent = pad(secs);
+}
+
+/* ---------- 卡片 ---------- */
+function renderCards(){
+  const now = new Date();
+  const todayIdx = dayIndex(now);
+
+  // 今天：第几天
+  $('today').innerHTML = '第 ' + (todayIdx + 1).toLocaleString('en-US') + ' <small>天</small>';
+  $('todaySub').textContent = fmtDate(now);
+
+  // 下一个周年
+  let y = now.getFullYear();
+  let anniv = new Date(y, CONFIG.start.getMonth(), CONFIG.start.getDate());
+  if (anniv - stripTime(now) < 0) {
+    y += 1;
+    anniv = new Date(y, CONFIG.start.getMonth(), CONFIG.start.getDate());
+  }
+  const yearsCount = y - CONFIG.start.getFullYear();
+  const annivDays = Math.round((stripTime(anniv) - stripTime(now)) / DAY);
+
+  if (annivDays === 0) {
+    $('nextAnniv').innerHTML = '今天 <small>是</small>';
+    $('nextAnnivSub').textContent = '第 ' + yearsCount + ' 个周年，快乐！';
+    $('nextAnniv').closest('.card').classList.add('hot');
+  } else {
+    $('nextAnniv').innerHTML = annivDays + ' <small>天</small>';
+    $('nextAnnivSub').textContent = '第 ' + yearsCount + ' 个周年 · ' + fmtDate(anniv);
+  }
+
+  // 下个整百天里程碑
+  const nextMile = (Math.floor(todayIdx / 100) + 1) * 100;
+  const mileDate = new Date(CONFIG.start.getTime() + nextMile * DAY);
+  const mileDays = Math.round((stripTime(mileDate) - stripTime(now)) / DAY);
+  $('nextMile').innerHTML = nextMile.toLocaleString('en-US') + ' <small>天</small>';
+  $('nextMileSub').textContent = '还有 ' + mileDays + ' 天 · ' + fmtDate(mileDate);
+
+  // 度过几个春夏秋冬
+  $('seasons').innerHTML = Math.floor(todayIdx / 365) + ' <small>年</small>';
+}
+
+function stripTime(d){
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+/* ---------- 时间线 ---------- */
+function renderTimeline(){
+  const now = stripTime(new Date());
+  const start = stripTime(CONFIG.start);
+  const rows = [];
+
+  // 起点
+  rows.push({
+    date: start,
+    title: '我们在一起了',
+    meta: '第 1 天，从这里开始'
+  });
+
+  // 每到整年
+  const maxYear = now.getFullYear() - start.getFullYear() + 1;
+  for (let i = 1; i <= maxYear; i++) {
+    rows.push({
+      date: new Date(start.getFullYear() + i, start.getMonth(), start.getDate()),
+      title: i + ' 周年',
+      meta: ''
+    });
+  }
+
+  // 每隔 500 天的里程碑
+  const totalDays = Math.floor((now - start) / DAY);
+  for (let d = 500; d <= (Math.floor(totalDays / 500) + 1) * 500; d += 500) {
+    rows.push({
+      date: new Date(start.getTime() + d * DAY),
+      title: d.toLocaleString('en-US') + ' 天',
+      meta: ''
+    });
+  }
+
+  rows.sort((a, b) => a.date - b.date);
+  rows.forEach(r => { if (!r.meta) r.meta = '第 ' + (Math.floor((r.date - start) / DAY) + 1).toLocaleString('en-US') + ' 天'; });
+
+  // 找下一个
+  let nextSet = false;
+  const html = rows.map(r => {
+    const diffDays = Math.round((r.date - now) / DAY);
+    let cls = 'past';
+    let meta = r.meta;
+    if (diffDays > 0 && !nextSet) {
+      cls = 'next'; nextSet = true;
+      meta = '还有 ' + diffDays + ' 天';
+    } else if (diffDays === 0) {
+      cls = 'next'; nextSet = true;
+      meta = '就是今天 🎉';
+    } else if (diffDays > 0) {
+      cls = 'future';
+      meta = '还有 ' + diffDays + ' 天';
+    } else {
+      meta = r.meta + ' · 已过去 ' + Math.abs(diffDays).toLocaleString('en-US') + ' 天';
+    }
+    return '<div class="item ' + cls + '">' +
+      '<div class="when">' + fmtDate(r.date) + '</div>' +
+      '<div class="what">' + r.title + '</div>' +
+      '<div class="meta">' + meta + '</div>' +
+      '</div>';
+  }).join('');
+
+  $('timeline').innerHTML = html;
+}
+
+/* ---------- 相册 ---------- */
+function renderGallery(){
+  if (!CONFIG.photos || !CONFIG.photos.length) return;
+  $('gallerySection').hidden = false;
+  $('gallery').innerHTML = CONFIG.photos.map(src =>
+    '<div class="shot"><img src="' + src + '" alt="" loading="lazy"></div>'
+  ).join('');
+}
+
+/* ---------- 情话 ---------- */
+function renderQuote(){
+  // 按“第几天”取，同一天刷新也不会变
+  const idx = Math.abs(dayIndex(new Date())) % CONFIG.quotes.length;
+  const q = CONFIG.quotes[idx];
+  $('quote').innerHTML = '<span class="mark">“</span>' + escapeHtml(q) + '<span class="mark">”</span>';
+}
+
+/* ---------- 飘浮的心 ---------- */
+function makeHearts(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = $('hearts');
+  const glyphs = ['❤', '♥', '❤', '♡'];
+  const n = 14;
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    const left = Math.random() * 100;
+    const dur = 13 + Math.random() * 14;
+    const delay = -Math.random() * 26;
+    const size = 10 + Math.random() * 16;
+    const op = 0.25 + Math.random() * 0.45;
+    html += '<span style="left:' + left.toFixed(2) + '%;' +
+      'font-size:' + size.toFixed(1) + 'px;' +
+      'animation-duration:' + dur.toFixed(1) + 's;' +
+      'animation-delay:' + delay.toFixed(1) + 's;' +
+      '--op:' + op.toFixed(2) + '">' +
+      glyphs[i % glyphs.length] + '</span>';
+  }
+  box.innerHTML = html;
+}
+
+/* ---------- 启动 ---------- */
+function boot(){
+  makeHearts();
+  renderCards();
+  renderTimeline();
+  renderGallery();
+  renderQuote();
+  tick();
+  setInterval(tick, 1000);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+</script>
+
+</body>
+</html>
