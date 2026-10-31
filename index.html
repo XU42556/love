@@ -255,12 +255,87 @@
     .card .v{font-size:1.5rem}
     .quote{padding:26px 20px}
   }
+  /* ---------- 密码门 ---------- */
+  #gate{
+    position:fixed;inset:0;z-index:9999;
+    display:grid;place-items:center;padding:24px;
+    background:radial-gradient(circle at 50% 28%,#2b0a19,#0c0409 68%);
+    transition:opacity .5s ease,visibility .5s ease;
+  }
+  #gate.hide{opacity:0;visibility:hidden;pointer-events:none}
+
+  .gate-box{width:100%;max-width:372px;text-align:center}
+
+  .lock{
+    width:66px;height:66px;margin:0 auto 22px;
+    display:grid;place-items:center;font-size:1.6rem;
+    border-radius:50%;
+    border:1px solid rgba(255,93,143,.42);
+    background:rgba(255,93,143,.1);
+    box-shadow:0 0 44px rgba(255,93,143,.3);
+    animation:beat 2.6s ease-out infinite;
+  }
+
+  .gate-t{margin:0 0 8px;font-size:1.15rem;font-weight:600;letter-spacing:.02em;color:#ffe7f0}
+  .gate-d{margin:0 0 24px;font-size:.85rem;color:var(--muted)}
+
+  .gate-input{
+    width:100%;padding:14px 16px;
+    font-size:1.06rem;color:#fff;
+    text-align:center;letter-spacing:.34em;text-indent:.34em;
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--line);border-radius:14px;
+    outline:none;
+    transition:border-color .2s ease,box-shadow .2s ease;
+  }
+  .gate-input::placeholder{color:#7c5f6c;letter-spacing:.2em}
+  .gate-input:focus{border-color:rgba(255,93,143,.62);box-shadow:0 0 0 4px rgba(255,93,143,.13)}
+
+  .gate-btn{
+    width:100%;margin-top:12px;padding:14px;
+    font-size:1rem;font-weight:600;color:#2a0512;
+    background:linear-gradient(135deg,var(--pink),var(--rose));
+    border:0;border-radius:14px;cursor:pointer;
+    transition:transform .16s ease,filter .16s ease;
+  }
+  .gate-btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .gate-btn:active{transform:none}
+
+  .gate-err{
+    height:20px;margin:10px 0 0;
+    font-size:.82rem;color:#ff8fa8;
+    opacity:0;transition:opacity .2s ease;
+  }
+  .gate-err.show{opacity:1}
+
+  .shake{animation:shake .42s ease}
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-9px)}
+    40%{transform:translateX(8px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(3px)}
+  }
+
 </style>
 </head>
 <body>
 
 <div class="bg" aria-hidden="true"></div>
 <div class="hearts" id="hearts" aria-hidden="true"></div>
+
+<!-- ===== 密码门：输对了才看得到下面 ===== -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="lock">🔒</div>
+    <p class="gate-t">这里是 xky 和 fyy 的小站</p>
+    <p class="gate-d">输入我们的密码进入</p>
+    <input id="gateInput" class="gate-input" type="password"
+           inputmode="numeric" autocomplete="off" placeholder="密码">
+    <button id="gateBtn" class="gate-btn" type="button">进去看看</button>
+    <p id="gateErr" class="gate-err"></p>
+  </div>
+</div>
 
 <div class="wrap">
 
@@ -332,6 +407,9 @@ const CONFIG = {
 
   yourName: 'xky',
   herName: 'fyy',
+
+  // 进入密码：改这里就行（纯前端，只能挡住随手点开的人）
+  password: '0501',
 
   // 相册：把照片放进同目录的 photos 文件夹，然后按下面的格式写进来
   // 例如：['photos/1.jpg', 'photos/2.jpg']
@@ -548,10 +626,63 @@ function boot(){
   setInterval(tick, 1000);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot);
-} else {
+/* ---------- 密码门 ---------- */
+const GATE_KEY = 'xky-fyy-unlocked';
+
+function isUnlocked(){
+  try { return sessionStorage.getItem(GATE_KEY) === '1'; } catch (e) { return false; }
+}
+
+function unlockGate(){
+  const g = document.getElementById('gate');
+  if (g) {
+    g.classList.add('hide');
+    setTimeout(function(){ g.style.display = 'none'; }, 520);
+  }
+  try { sessionStorage.setItem(GATE_KEY, '1'); } catch (e) {}
   boot();
+}
+
+function initGate(){
+  const input = document.getElementById('gateInput');
+  const btn   = document.getElementById('gateBtn');
+  const err   = document.getElementById('gateErr');
+  const box   = document.querySelector('.gate-box');
+
+  function submit(){
+    const v = (input.value || '').trim();
+    if (v === CONFIG.password) {
+      unlockGate();
+      return;
+    }
+    err.textContent = '密码不对哦，再想想～';
+    err.classList.add('show');
+    box.classList.remove('shake');
+    void box.offsetWidth;          // 强制重排，让动画能重复播放
+    box.classList.add('shake');
+    input.select();
+  }
+
+  btn.addEventListener('click', submit);
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') submit();
+  });
+  input.addEventListener('input', function(){
+    err.classList.remove('show');
+  });
+
+  input.focus();
+}
+
+function start(){
+  if (isUnlocked()) { unlockGate(); return; }
+  initGate();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', start);
+} else {
+  start();
 }
 </script>
 
